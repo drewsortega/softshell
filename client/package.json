@@ -1,0 +1,11 @@
+{
+  "name": "softshell",
+  "version": "0.0.1",
+  "description": "Softshell frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "author": "Drew S Ortega, Will Wiseman",
+  "license": "ISC"
+}
