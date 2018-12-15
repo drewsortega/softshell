@@ -7,3 +7,4 @@ $ cd ~/workspace/softshell/client
 ```
 
 2. Start server. For development, run `$ npm run dev`. For production, run `$ npm start`.
+
