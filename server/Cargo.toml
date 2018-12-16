@@ -5,3 +5,10 @@ authors = ["Drew S. Ortega <DrewSOrtega@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+rocket = "0.4.0"
+serde = "1.0.82"
+serde_derive = "1.0.82"
+serde_json = "1.0.33"
+rocket_contrib = "0.4.0"
+hyper = "0.12.18"
+hyper-tls = "0.3.1"

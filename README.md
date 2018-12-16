@@ -1,2 +1,2 @@
 # softshell
-Rates how nice you were in current year
+Rates how nice you were in [current year]
