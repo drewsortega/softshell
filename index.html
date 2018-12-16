@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title></title>
+
+  <link rel="stylesheet" href="main.css">
+  <link rel="icon" href="images/favicon.png">
+	<script>
+		function scrollFirst() { //execute all three functions
+			firstScrollFirst();
+			secondScrollFirst();
+			thirdScrollFirst();
+			}
+		function firstScrollFirst() {
+			let firp = document.getElementById('firstpage'); //define first page var
+			firp.style.transitionDuration = "2s"; //set transition duration
+			firp.style.top = "-125%"; //this percentage is at page -1 (one up)
+			}
+		function secondScrollFirst() {
+			let secp = document.getElementById('secondpage'); //define second page var
+			secp.style.transitionDuration = "2s";
+			secp.style.top = "25%"; //this percentage is at page 1 (main page)
+			}
+		function thirdScrollFirst() {
+			thip = document.getElementById('thirdpage'); //define third page var
+			thip.style.transitionDuration = "2s";
+			thip.style.top = "125%"; //this percentage is at page 2 (one down)
+			};
+		function scrollSecond() { //execute all three functions at the same time
+			firstScrollSecond();
+			secondScrollSecond();
+			thirdScrollSecond();
+			}
+		function firstScrollSecond() {
+			let firp = document.getElementById('firstpage'); //define first page var
+			firp.style.transitionDuration = "2s";
+			firp.style.top = "-225%"; //this represents page 3 (two down)
+			}
+		function secondScrollSecond() {
+			let secp = document.getElementById('secondpage'); //define second page var
+			secp.style.transitionDuration = "2s";
+			secp.style.top = "-125%"; //this represents page 2 (one down)
+			}
+		function thirdScrollSecond() {
+			thip = document.getElementById('thirdpage'); //define third page var
+			thip.style.transitionDuration = "2s";
+			thip.style.top = "25%"; //this represents page 1 (main page)
+			};
+		function scrollBack() { //execute all three functions at the same time
+			firstScrollBack();
+			secondScrollBack();
+			thirdScrollBack();
+			}
+		function firstScrollBack() {
+			let firp = document.getElementById('firstpage'); //define first page var
+			firp.style.transitionDuration = "2s";
+			firp.style.top = "-125%"; //this represents page -1 (one up)
+			}
+		function secondScrollBack() {
+			let secp = document.getElementById('secondpage'); //define second page var
+			secp.style.transitionDuration = "2s";
+			secp.style.top = "25%"; //this represents main page
+			}
+		function thirdScrollBack() {
+			thip = document.getElementById('thirdpage'); //define third page var
+			thip.style.transitionDuration = "2s";
+			thip.style.top = "125%"; //this represents page 2 (one down)
+			};
+	</script>
+
+</head>
+
+<body>
+	<div id="firstpage">
+		<div class="noncon" id="titlebox">
+			<h1 id="titletext">Softshell</h1> <!-- maybe make a title image in a fancy font -->
+		</div>
+		<div class="noncon" id="twitterlink" onsubmit="">
+			<form name="twitterurl">
+			<input type="text" name="linkboy" value="">
+			<input type="submit" name="subboy" value="Go!">
+			</form>
+			<!--<button type="button" onclick="scrollFirst()">Scroll</button>-->
+		</div>
+		<div class="noncon" id="intro">
+			<p id="introtext">Enter your Twitter link in the textbox above to see how nice you were this year!</p>
+		</div>
+	</div>
+	<div id="secondpage">
+		<div class="noncon" id="percentages">
+		
+		</div>
+		<div class="noncon" id="graph">
+		
+		</div>
+		<div class="noncon" id="tenneg">
+		
+		</div>
+		<div class="noncon" id="tenpos">
+		
+		</div>
+		<div class="noncon" id="nextpage">
+			<img src="img/down.png" onclick="scrollSecond()">
+		</div>
+	</div>
+	<div id="thirdpage">
+		<img src="img/up.png" onclick="scrollBack()">
+		<div class="noncon" id="clarertitle">
+			<p></p>
+		</div>
+		<div class="noncon" id="explain">
+		
+		</div>
+		<div class="noncon" id="credits">
+			<p>Frontend design: Willard Wiseman</p>
+			<p>Backend design: Drew Ortega</p>
+		</div>
+	</div>
+	
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>-->
+</body>
+
+</html>

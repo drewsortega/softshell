@@ -1,0 +1,109 @@
+div {
+	text-align: center;
+	border-radius: 10px; 
+	-moz-border-radius: 10px; 
+	-webkit-border-radius: 10px; 
+	border: 0px solid #FFFFFF;
+}
+body {
+	background-image: url('background.png');
+	background-repeat: no-repeat;
+	background-size: stretch;
+	font-family: Tahoma, Geneva, sans-serif;
+}
+.noncon {
+	background-color: white;
+}
+#firstpage {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 25%;
+	width: 50%;
+}
+#secondpage {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 75%;
+	width: 50%;
+	background-color: white;
+}
+#thirdpage {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 225%;
+	width: 50%;
+}
+#titlebox {
+	position: relative;
+	top: 25%;	
+}
+#titletext {
+	
+}
+#twitterlink {
+	position: relative;
+	top: 35%;
+}
+#intro {
+	position: relative;
+	top:45%;
+}
+#introtext {
+	
+}
+#percentages {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+	width: 50%;
+	height: 50%;
+}
+#graph {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+	width: 50%;
+	height: 50%;
+}
+#tenneg {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+	width: 50%;
+	height: 50%;
+}
+#tenpos {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+	width: 50%;
+	height: 50%;
+}
+#clarertitle {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+}
+#explain {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+}
+#credits {
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+}

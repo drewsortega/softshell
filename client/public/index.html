@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title></title>
+
+  <link rel="stylesheet" href="main.css">
+  <link rel="icon" href="images/favicon.png">
+	<script>
+		function myFunction() {
+				firstScroll();
+				secondScroll();
+				thirdScroll();
+			}
+		function thirdScroll() {
+			thip = document.getElementById('thirdpage'); //define third page var
+			thip.style.transitionDuration = "2s";
+			thip.style.top = "25%";
+			};
+		function firstScroll() {
+			let firp = document.getElementById('firstpage'); //define first page var
+			firp.style.transitionDuration = "2s";
+			firp.style.top = "-125%";
+			}
+		function secondScroll() {
+			let secp = document.getElementById('secondpage'); //define second page var
+			document.getElementById('secondpage').style.transitionDuration = "2s";
+			document.getElementById('secondpage').style.MozTransitionDuration = "2s";
+			document.getElementById('secondpage').style.top = "5%";
+			}
+	</script>
+
+</head>
+
+<body>
+	<div id="firstpage">
+		<div class="noncon" id="titlebox">
+			<h1 id="titletext">Softshell</h1> <!-- maybe make a title image in a fancy font -->
+		</div>
+		<div class="noncon" id="twitterlink">
+			<!--<input type="text" name="linkboy" value="">-->
+			<button type="button" onclick="myFunction()">Scroll</button>
+		</div>
+		<div class="noncon" id="intro">
+			<p id="introtext">Enter your Twitter link in the textbox above to see how nice you were this year!</p>
+		</div>
+	</div>
+	<div id="secondpage">
+		<div class="noncon" id="percentages">
+			<p>aa</p>
+		</div>
+		<div class="noncon" id="graph">
+		
+		</div>
+		<div class="noncon" id="tenneg">
+		
+		</div>
+		<div class="noncon" id="tenpos">
+		
+	</div>
+	<div id="thirdpage">
+		<div class="noncon" id="clarertitle">
+		
+		</div>
+		<div class="noncon" id="explain">
+		
+		</div>
+		<div class="noncon" id="credits">
+			<p>Frontend design: Willard Wiseman</p>
+			<p>Backend design: Drew Ortega</p>
+		</div>
+	</div>
+	
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</body>
+
+</html>
