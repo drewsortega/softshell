@@ -1,17 +1,29 @@
+use dotenv_codegen::dotenv;
+use hyper::header::{HeaderValue, AUTHORIZATION};
 use hyper::rt::{self, Future, Stream};
 use hyper::Client;
 use hyper_tls::HttpsConnector;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
+use std::env;
 use std::io::{self, Write};
+use std::iter;
 
-pub fn init(screen_name: String) {
-    let uri = "http://localhost:3001".parse().unwrap();
-
+pub fn get_tweets(screen_name: String) {
+    let uri = format!(
+        "{}?screen_name={}",
+        env::var("API_URL").unwrap().to_string(),
+        screen_name
+    )
+    .parse()
+    .unwrap();
+    println!("{}", uri);
     let fut = rt::lazy(|| {
         fetch_json(uri)
             .map(|tweets| {
-                println!("values: {:#?}", tweets);
+                for tweet in &tweets {
+                    println!("{}", tweet.text);
+                }
             })
             .map_err(|err| match err {
                 FetchError::Http(err) => eprintln!("http error: {}", err),
@@ -31,10 +43,10 @@ fn fetch_json(url: hyper::Uri) -> impl Future<Item = Vec<Tweet>, Error = FetchEr
         .and_then(|res| res.into_body().concat2())
         .from_err::<FetchError>()
         .and_then(|body| {
-            println!(
-                "body: {}",
-                String::from_utf8_lossy(&(body.to_vec())).to_string()
-            );
+            // println!(
+            //     "body: {}",
+            //     String::from_utf8_lossy(&(body.to_vec())).to_string()
+            // );
             let tweets: Vec<Tweet> = serde_json::from_slice(&body)?;
 
             Ok(tweets)
