@@ -8,8 +8,7 @@ use serde_json;
 use std::env;
 use std::io::{self, Write};
 use std::iter;
-
-pub fn get_tweets(screen_name: String) {
+pub fn get_tweets(screen_name: String) -> impl Future<Item = Vec<Tweet>, Error = FetchError> {
     let uri = format!(
         "{}?screen_name={}",
         env::var("API_URL").unwrap().to_string(),
@@ -17,21 +16,8 @@ pub fn get_tweets(screen_name: String) {
     )
     .parse()
     .unwrap();
-    println!("{}", uri);
-    let fut = rt::lazy(|| {
-        fetch_json(uri)
-            .map(|tweets| {
-                for tweet in &tweets {
-                    println!("{}", tweet.text);
-                }
-            })
-            .map_err(|err| match err {
-                FetchError::Http(err) => eprintln!("http error: {}", err),
-                FetchError::Json(err) => eprintln!("json parsing error: {}", err),
-            })
-    });
 
-    rt::run(fut);
+    fetch_json(uri).and_then(|tweets| Ok(tweets)).from_err()
 }
 
 fn fetch_json(url: hyper::Uri) -> impl Future<Item = Vec<Tweet>, Error = FetchError> {
@@ -53,15 +39,16 @@ fn fetch_json(url: hyper::Uri) -> impl Future<Item = Vec<Tweet>, Error = FetchEr
         })
         .from_err()
 }
-#[derive(Deserialize, Debug)]
-struct Tweet {
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Tweet {
     created_at: String,
     id_str: String,
     text: String,
 }
 
 // Define a type so we can return multiple types of errors
-enum FetchError {
+#[derive(Debug)]
+pub enum FetchError {
     Http(hyper::Error),
     Json(serde_json::Error),
 }
