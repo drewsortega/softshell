@@ -116,7 +116,7 @@ pub fn top_10(tweets: Vec<Tweet>) -> Top10 {
     }
     Top10 {
         good: top_good,
-        bad: top_bad
+        bad: top_bad,
     }
 }
 
@@ -125,22 +125,83 @@ pub fn parse_twitter(url: String) -> IronResult<Response> {
     let mut reactor = Core::new().unwrap();
     let tweet_result: Result<Vec<Tweet>, FetchError> =
         reactor.run(get_tweets(url.as_str().to_owned()));
+
     match tweet_result {
         Ok(tweets) => {
-            let top_10 = top_10(tweets);
-            Ok(
-                Response::with((
+            let mut map_bad = get_empty_hashmap("bad_words.txt");
+            let mut map_good = get_empty_hashmap("good_words.txt");
+
+            let mut top_bad: Vec<Word> = Vec::new();
+            let mut top_good: Vec<Word> = Vec::new();
+
+            let mut bad_count: u64 = 0;
+            let mut good_count: u64 = 0;
+            let mut neutral_count: u64 = 0;
+
+            top_bad.resize(
+                10,
+                Word {
+                    text: "".to_string(),
+                    count: 0,
+                },
+            );
+            top_good.resize(
+                10,
+                Word {
+                    text: "".to_string(),
+                    count: 0,
+                },
+            );
+
+            for tweet in tweets {
+                let words_iter = tweet.text.split(" ");
+                for word in words_iter {
+                    if map_bad.contains_key(word) {
+                        bad_count += 1;
+                        *map_bad.get_mut(word).unwrap() += 1;
+                        sort_insert(
+                            &(Word {
+                                text: word.to_string(),
+                                count: map_bad.get(word).unwrap().to_owned(),
+                            }),
+                            &mut top_bad,
+                        );
+                    } else if map_good.contains_key(word) {
+                        good_count += 1;
+                        *map_good.get_mut(word).unwrap() += 1;
+                        sort_insert(
+                            &(Word {
+                                text: word.to_string(),
+                                count: map_good.get(word).unwrap().to_owned(),
+                            }),
+                            &mut top_good,
+                        );
+                    } else {
+                        neutral_count += 1;
+                    }
+                }
+            }
+            println!("{}, {}, {}", good_count, bad_count, neutral_count);
+            let total_words = neutral_count + bad_count + good_count;
+            let percent_good: u32 =
+                (((good_count as f64) / (total_words as f64)) * 100.0).round() as u32;
+            let percent_bad: u32 =
+                (((bad_count as f64) / (total_words as f64)) * 100.0).round() as u32;
+            let percent_neutral: u32 =
+                (((neutral_count as f64) / (total_words as f64)) * 100.0).round() as u32;
+
+            Ok(Response::with((
                 content_type,
                 Status::Ok,
                 json!({
                 "validURL": true,
                 "data": {
-                    "top10bad": top_10.bad,
-                    "top10good": top_10.good,
+                    "top10bad": top_bad,
+                    "top10good": top_good,
                     "percentages": {
-                        "percentNaughty": 0,
-                        "percentNeutral": 0,
-                        "percentGood": 0,
+                        "percentNaughty": percent_bad,
+                        "percentNeutral": percent_neutral,
+                        "percentGood": percent_good,
                     }
                 }
                 })
