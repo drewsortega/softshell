@@ -1,6 +1,7 @@
 use dotenv_codegen::dotenv;
+use futures::prelude::*;
 use hyper::header::{HeaderValue, AUTHORIZATION};
-use hyper::rt::{self, Future, Stream};
+use hyper::rt::{self, Stream};
 use hyper::Client;
 use hyper_tls::HttpsConnector;
 use serde_derive::{Deserialize, Serialize};
@@ -17,7 +18,7 @@ pub fn get_tweets(screen_name: String) -> impl Future<Item = Vec<Tweet>, Error =
     .parse()
     .unwrap();
 
-    fetch_json(uri).and_then(|tweets| Ok(tweets)).from_err()
+    fetch_json(uri).and_then(|tweets| Ok(tweets))
 }
 
 fn fetch_json(url: hyper::Uri) -> impl Future<Item = Vec<Tweet>, Error = FetchError> {
@@ -41,9 +42,9 @@ fn fetch_json(url: hyper::Uri) -> impl Future<Item = Vec<Tweet>, Error = FetchEr
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Tweet {
-    created_at: String,
-    id_str: String,
-    text: String,
+    pub created_at: String,
+    pub id_str: String,
+    pub text: String,
 }
 
 // Define a type so we can return multiple types of errors
