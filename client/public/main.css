@@ -6,13 +6,13 @@ div {
 	border: 0px solid #FFFFFF;
 }
 body {
-	background-image: url('background.png');
-	background-repeat: no-repeat;
+	background-image: linear-gradient(to right, red, green);
 	background-size: stretch;
 	font-family: Tahoma, Geneva, sans-serif;
 }
 .noncon {
 	background-color: white;
+	margin: 5%;
 }
 #firstpage {
 	margin: auto;
@@ -27,8 +27,9 @@ body {
 	position: fixed;
 	left: 0;
 	right: 0;
-	top: 75%;
+	top: 125%;
 	width: 50%;
+	height: 10%;
 	background-color: white;
 }
 #thirdpage {
@@ -40,70 +41,41 @@ body {
 	width: 50%;
 }
 #titlebox {
-	position: relative;
-	top: 25%;	
+	
 }
 #titletext {
 	
 }
 #twitterlink {
-	position: relative;
-	top: 35%;
+	
 }
 #intro {
-	position: relative;
-	top:45%;
+	
 }
 #introtext {
 	
 }
 #percentages {
 	margin: auto;
-	position: fixed;
-	left: 0;
-	right: 0;
-	width: 50%;
-	height: 50%;
 }
 #graph {
 	margin: auto;
-	position: fixed;
-	left: 0;
-	right: 0;
-	width: 50%;
-	height: 50%;
 }
 #tenneg {
 	margin: auto;
-	position: fixed;
-	left: 0;
-	right: 0;
-	width: 50%;
-	height: 50%;
 }
 #tenpos {
 	margin: auto;
-	position: fixed;
-	left: 0;
-	right: 0;
-	width: 50%;
-	height: 50%;
+}
+#nextpage {
+	margin: auto;
 }
 #clarertitle {
 	margin: auto;
-	position: fixed;
-	left: 0;
-	right: 0;
 }
 #explain {
 	margin: auto;
-	position: fixed;
-	left: 0;
-	right: 0;
 }
 #credits {
 	margin: auto;
-	position: fixed;
-	left: 0;
-	right: 0;
 }

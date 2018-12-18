@@ -10,28 +10,74 @@
 
   <link rel="stylesheet" href="main.css">
   <link rel="icon" href="images/favicon.png">
-	<script>
-		function myFunction() {
-				firstScroll();
-				secondScroll();
-				thirdScroll();
-			}
-		function thirdScroll() {
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script type="text/javascript">
+		function scrollFirst() {
+			firstScrollFirst();
+			secondScrollFirst();
+			thirdScrollFirst();
+			console.log('scrolling to page 2');
+		}
+		function firstScrollFirst() {
+			setTimeout (function() {
+				let firp = document.getElementById('firstpage'); //define first page var
+				firp.style.transitionDuration = "2s"; //set transition duration
+				firp.style.top = "-125%"; //this percentage is at page -1 (one up)
+				}, 0);
+			console.log('first function is good');
+		}
+		function secondScrollFirst() {
+			console.log('second function is good');
+			let secp = document.getElementById('secondpage'); //define second page var
+			secp.style.transitionDuration = "2s";
+			secp.style.top = "25%"; //this percentage is at page 1 (main page)
+		}
+		function thirdScrollFirst() {
 			thip = document.getElementById('thirdpage'); //define third page var
 			thip.style.transitionDuration = "2s";
-			thip.style.top = "25%";
-			};
-		function firstScroll() {
+			thip.style.top = "125%"; //this percentage is at page 2 (one down)
+			console.log('third function is good');
+		};
+		function scrollSecond() { //execute all three functions at the same time
+			firstScrollSecond();
+			secondScrollSecond();
+			thirdScrollSecond();
+		}
+		function firstScrollSecond() {
 			let firp = document.getElementById('firstpage'); //define first page var
 			firp.style.transitionDuration = "2s";
-			firp.style.top = "-125%";
-			}
-		function secondScroll() {
+			firp.style.top = "-225%"; //this represents page 3 (two down)
+		}
+		function secondScrollSecond() {
 			let secp = document.getElementById('secondpage'); //define second page var
-			document.getElementById('secondpage').style.transitionDuration = "2s";
-			document.getElementById('secondpage').style.MozTransitionDuration = "2s";
-			document.getElementById('secondpage').style.top = "5%";
-			}
+			secp.style.transitionDuration = "2s";
+			secp.style.top = "-125%"; //this represents page 2 (one down)
+		}
+		function thirdScrollSecond() {
+			thip = document.getElementById('thirdpage'); //define third page var
+			thip.style.transitionDuration = "2s";
+			thip.style.top = "25%"; //this represents page 1 (main page)
+		};
+		function submitForm() {
+			document.getElementById('myform').submit();
+			var turl = document.getElementById('linkboy').value;
+			console.log('submitted Twitter url is ' + turl);
+			twitterRequest(turl);
+		}
+		function twitterRequest(s) {
+			console.log('url to be requested is ' + s);
+			axios.get('http://localhost:8000/api/twitter?url=' + s)
+				.then(function(response) {
+					console.log('Reponse status is ' + response.status);
+					console.log('The following is the response from the server');
+					console.log(response);
+					if(response.status === 200 && response.data.validURL === true){
+						console.log('url was valid');
+					} else {
+						console.log('url was invalid');
+						}
+			});
+		}
 	</script>
 
 </head>
@@ -42,8 +88,11 @@
 			<h1 id="titletext">Softshell</h1> <!-- maybe make a title image in a fancy font -->
 		</div>
 		<div class="noncon" id="twitterlink">
-			<!--<input type="text" name="linkboy" value="">-->
-			<button type="button" onclick="myFunction()">Scroll</button>
+			<form name="twitterurl" id="myform"	onsubmit="">
+				<input type="text" name="linkboy" id="linkboy" value="">
+			</form>
+			<button type="button" onclick="submitForm();scrollFirst();">Submit Form</button>
+			<button type="button" onclick="scrollFirst();">Scroll</button>
 		</div>
 		<div class="noncon" id="intro">
 			<p id="introtext">Enter your Twitter link in the textbox above to see how nice you were this year!</p>
@@ -51,7 +100,7 @@
 	</div>
 	<div id="secondpage">
 		<div class="noncon" id="percentages">
-			<p>aa</p>
+		
 		</div>
 		<div class="noncon" id="graph">
 		
@@ -61,13 +110,19 @@
 		</div>
 		<div class="noncon" id="tenpos">
 		
+		</div>
+		<div class="noncon" id="nextpage">
+			<img src="img/down.png" onclick="scrollSecond()">
+		</div>
 	</div>
 	<div id="thirdpage">
+		<img src="img/up.png" onclick="scrollFirst()">
 		<div class="noncon" id="clarertitle">
-		
+			<h2>Some Useful Information</h2>
 		</div>
 		<div class="noncon" id="explain">
-		
+			<p>
+			</p>
 		</div>
 		<div class="noncon" id="credits">
 			<p>Frontend design: Willard Wiseman</p>
@@ -75,7 +130,7 @@
 		</div>
 	</div>
 	
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>-->
 </body>
 
 </html>
