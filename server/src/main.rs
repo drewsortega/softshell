@@ -36,7 +36,7 @@ fn handler(req: &mut Request) -> IronResult<Response> {
             let query_iter = query.split("&");
             for q in query_iter {
                 let (key, value) = q.split_at(4);
-                if (key == "url=") {
+                if key == "url=" {
                     parse_twitter(value.to_string());
                 }
             }
