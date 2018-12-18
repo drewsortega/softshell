@@ -37,7 +37,7 @@ fn handler(req: &mut Request) -> IronResult<Response> {
             for q in query_iter {
                 let (key, value) = q.split_at(4);
                 if key == "url=" {
-                    parse_twitter(value.to_string());
+                    return parse_twitter(value.to_string());
                 }
             }
         }
@@ -46,7 +46,7 @@ fn handler(req: &mut Request) -> IronResult<Response> {
             Status::Ok,
             json!({
             "validURL": false,
-            "data": null,
+            "data": null
             })
             .to_string(),
         )))

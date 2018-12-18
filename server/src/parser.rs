@@ -23,8 +23,14 @@ pub struct Word {
     pub text: String,
     pub count: u32,
 }
-pub fn get_empty_bad_hashmap() -> HashMap<String, u32> {
-    let path = Path::new("bad_words.txt");
+
+pub struct Top10 {
+    pub bad: Vec<Word>,
+    pub good: Vec<Word>,
+}
+
+pub fn get_empty_hashmap(filename: &str) -> HashMap<String, u32> {
+    let path = Path::new(filename);
     let display = path.display();
 
     let mut file = match File::open(&path) {
@@ -53,23 +59,22 @@ pub fn sort_insert(new_word: &Word, words: &mut Vec<Word>) {
         }
     }
     if !contains {
-        for i in 0..10 {
-            if new_word.count >= words[i].count {
-                words.insert(i, new_word.to_owned());
-            }
+        println!("adding new word to list, {:?}", new_word.text);
+        if (new_word.count > words[9].count) {
+            words[9] = new_word.to_owned();
         }
-        words.resize(
-            10,
-            Word {
-                text: "".to_string(),
-                count: 0,
-            },
-        );
+        words.sort_by(|a, b| b.count.cmp(&a.count))
+
+        //this is really inefficient. it should not sort every time. but it works for now.
     }
 }
-pub fn top_10_bad(tweets: Vec<Tweet>) -> Vec<Word> {
-    let mut map = get_empty_bad_hashmap();
+pub fn top_10(tweets: Vec<Tweet>) -> Top10 {
+    let mut map_bad = get_empty_hashmap("bad_words.txt");
+    let mut map_good = get_empty_hashmap("good_words.txt");
+
     let mut top_bad: Vec<Word> = Vec::new();
+    let mut top_good: Vec<Word> = Vec::new();
+
     top_bad.resize(
         10,
         Word {
@@ -77,45 +82,77 @@ pub fn top_10_bad(tweets: Vec<Tweet>) -> Vec<Word> {
             count: 0,
         },
     );
+    top_good.resize(
+        10,
+        Word {
+            text: "".to_string(),
+            count: 0,
+        },
+    );
+
     for tweet in tweets {
         let words_iter = tweet.text.split(" ");
         for word in words_iter {
-            if map.contains_key(word) {
-                *map.get_mut(word).unwrap() += 1;
+            if map_bad.contains_key(word) {
+                *map_bad.get_mut(word).unwrap() += 1;
+                sort_insert(
+                    &(Word {
+                        text: word.to_string(),
+                        count: map_bad.get(word).unwrap().to_owned(),
+                    }),
+                    &mut top_bad,
+                );
+            } else if map_good.contains_key(word) {
+                *map_good.get_mut(word).unwrap() += 1;
+                sort_insert(
+                    &(Word {
+                        text: word.to_string(),
+                        count: map_good.get(word).unwrap().to_owned(),
+                    }),
+                    &mut top_good,
+                );
             }
-            sort_insert(
-                &(Word {
-                    text: word.to_string(),
-                    count: *map.get(word).unwrap(),
-                }),
-                &mut top_bad,
-            );
         }
     }
-    top_bad
+    Top10 {
+        good: top_good,
+        bad: top_bad
+    }
 }
 
-pub fn parse_twitter(url: String) -> Result<Response, IronError> {
+pub fn parse_twitter(url: String) -> IronResult<Response> {
     let content_type = "application/json".parse::<mime::Mime>().unwrap();
     let mut reactor = Core::new().unwrap();
     let tweet_result: Result<Vec<Tweet>, FetchError> =
         reactor.run(get_tweets(url.as_str().to_owned()));
     match tweet_result {
-        Ok(tweets) => Ok(Response::with((
-            content_type,
-            Status::Ok,
-            json!({
-            "validURL": true,
-            "data": top_10_bad(tweets),
-            })
-            .to_string(),
-        ))),
+        Ok(tweets) => {
+            let top_10 = top_10(tweets);
+            Ok(
+                Response::with((
+                content_type,
+                Status::Ok,
+                json!({
+                "validURL": true,
+                "data": {
+                    "top10bad": top_10.bad,
+                    "top10good": top_10.good,
+                    "percentages": {
+                        "percentNaughty": 0,
+                        "percentNeutral": 0,
+                        "percentGood": 0,
+                    }
+                }
+                })
+                .to_string(),
+            )))
+        }
         Err(_) => Ok(Response::with((
             content_type,
             Status::InternalServerError,
             json!({
             "validURL": false,
-            "data": null,
+            "data": null
             })
             .to_string(),
         ))),

@@ -9,6 +9,7 @@ use serde_json;
 use std::env;
 use std::io::{self, Write};
 use std::iter;
+
 pub fn get_tweets(screen_name: String) -> impl Future<Item = Vec<Tweet>, Error = FetchError> {
     let uri = format!(
         "{}?screen_name={}",

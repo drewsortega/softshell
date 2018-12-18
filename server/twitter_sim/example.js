@@ -3,7 +3,7 @@ module.exports = [
         "created_at": "Thu Apr 06 15:28:43 +0000 2017",
         "id": 850007368138018817,
         "id_str": "850007368138018817",
-        "text": "RT @TwitterDev: 1/ Today we’re sharing our vision for the future of the Twitter API platform!nhttps://t.co/XweGngmxlP",
+        "text": "RT @TwitterDev: 1/ Today we’re sharing API our vision for the future API of the Twitter API platform!nhttps://t.co/XweGngmxlP",
         "truncated": false,
         "entities": {
             "hashtags": [],
