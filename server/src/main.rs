@@ -26,7 +26,7 @@ use dotenv::dotenv;
 use iron::mime;
 use parser::parse_twitter;
 use serde_json::json;
-use std::env;
+
 fn handler(req: &mut Request) -> IronResult<Response> {
     let content_type = "application/json".parse::<mime::Mime>().unwrap();
     let path = req.url.path();
@@ -57,7 +57,5 @@ fn handler(req: &mut Request) -> IronResult<Response> {
 
 fn main() {
     dotenv().ok();
-    //get_tweets("realdonaldtrump".parse().unwrap());
-    let args: Vec<String> = env::args().collect();
     Iron::new(handler).http("localhost:8000");
 }

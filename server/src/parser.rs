@@ -24,11 +24,6 @@ pub struct Word {
     pub count: u32,
 }
 
-pub struct Top10 {
-    pub bad: Vec<Word>,
-    pub good: Vec<Word>,
-}
-
 pub fn get_empty_hashmap(filename: &str) -> HashMap<String, u32> {
     let path = Path::new(filename);
     let display = path.display();
@@ -60,7 +55,7 @@ pub fn sort_insert(new_word: &Word, words: &mut Vec<Word>) {
     }
     if !contains {
         println!("adding new word to list, {:?}", new_word.text);
-        if (new_word.count > words[9].count) {
+        if new_word.count > words[9].count {
             words[9] = new_word.to_owned();
         }
         words.sort_by(|a, b| b.count.cmp(&a.count))
@@ -68,58 +63,6 @@ pub fn sort_insert(new_word: &Word, words: &mut Vec<Word>) {
         //this is really inefficient. it should not sort every time. but it works for now.
     }
 }
-pub fn top_10(tweets: Vec<Tweet>) -> Top10 {
-    let mut map_bad = get_empty_hashmap("bad_words.txt");
-    let mut map_good = get_empty_hashmap("good_words.txt");
-
-    let mut top_bad: Vec<Word> = Vec::new();
-    let mut top_good: Vec<Word> = Vec::new();
-
-    top_bad.resize(
-        10,
-        Word {
-            text: "".to_string(),
-            count: 0,
-        },
-    );
-    top_good.resize(
-        10,
-        Word {
-            text: "".to_string(),
-            count: 0,
-        },
-    );
-
-    for tweet in tweets {
-        let words_iter = tweet.text.split(" ");
-        for word in words_iter {
-            if map_bad.contains_key(word) {
-                *map_bad.get_mut(word).unwrap() += 1;
-                sort_insert(
-                    &(Word {
-                        text: word.to_string(),
-                        count: map_bad.get(word).unwrap().to_owned(),
-                    }),
-                    &mut top_bad,
-                );
-            } else if map_good.contains_key(word) {
-                *map_good.get_mut(word).unwrap() += 1;
-                sort_insert(
-                    &(Word {
-                        text: word.to_string(),
-                        count: map_good.get(word).unwrap().to_owned(),
-                    }),
-                    &mut top_good,
-                );
-            }
-        }
-    }
-    Top10 {
-        good: top_good,
-        bad: top_bad,
-    }
-}
-
 pub fn parse_twitter(url: String) -> IronResult<Response> {
     let content_type = "application/json".parse::<mime::Mime>().unwrap();
     let mut reactor = Core::new().unwrap();

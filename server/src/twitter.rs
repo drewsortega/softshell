@@ -1,14 +1,10 @@
-use dotenv_codegen::dotenv;
 use futures::prelude::*;
-use hyper::header::{HeaderValue, AUTHORIZATION};
-use hyper::rt::{self, Stream};
+use hyper::rt::Stream;
 use hyper::Client;
 use hyper_tls::HttpsConnector;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use std::env;
-use std::io::{self, Write};
-use std::iter;
 
 pub fn get_tweets(screen_name: String) -> impl Future<Item = Vec<Tweet>, Error = FetchError> {
     let uri = format!(
