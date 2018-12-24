@@ -16,6 +16,9 @@ extern crate tokio;
 extern crate tokio_core;
 extern crate tokio_io;
 
+extern crate hmac;
+extern crate sha1;
+
 use iron::prelude::*;
 use iron::status::Status;
 
