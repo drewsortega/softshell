@@ -3,6 +3,7 @@
 #![feature(type_ascription)]
 
 extern crate dotenv;
+extern crate regex;
 extern crate dotenv_codegen;
 extern crate hyper;
 extern crate hyper_tls;
@@ -18,6 +19,7 @@ extern crate tokio_io;
 
 extern crate hmac;
 extern crate sha1;
+extern crate url;
 
 use iron::prelude::*;
 use iron::status::Status;

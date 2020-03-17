@@ -67,7 +67,7 @@ pub fn parse_twitter(url: String) -> IronResult<Response> {
     let content_type = "application/json".parse::<mime::Mime>().unwrap();
     let mut reactor = Core::new().unwrap();
     let tweet_result: Result<Vec<Tweet>, FetchError> =
-        reactor.run(get_tweets(url.as_str().to_owned()));
+        reactor.run(get_tweets(&url.as_str().to_owned()));
 
     match tweet_result {
         Ok(tweets) => {

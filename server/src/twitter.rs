@@ -9,20 +9,57 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use sha1::Sha1;
 use std::env;
+use regex::Regex;
+use lazy_static;
 use std::str;
 
 type HmacSha1 = Hmac<Sha1>;
-fn create_base_string(
-    consumer_key: String,
-    oauth_nonce: String,
-    timestamp: String,
-    oauth_token: String,
-    screen_name: String,
-) -> String {
-    format!("POST&https%3A%2F%2Fapi.twitter.com%2F1.1%2Fstatuses%2Fuser_timeline.json&include_entities%3Dtrue%26oauth_consumer_key%3D{}%26oauth_nonce%3D{}%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D{}%26oauth_token%3D{}%26oauth_version%3D1.0%26screen_name%3D{}",
-        consumer_key, oauth_nonce, timestamp, oauth_token, screen_name)
+
+#[derive(Debug, Clone)]
+pub struct Param {
+    pub key: String,
+    pub value: String,
 }
-fn create_signature(consumer_secret: String, token_secret: String, base_string: String) -> String {
+
+percent_encode(input: String) -> String {
+    for c in input {
+        
+    }
+}
+
+fn create_parameters_string(parameters: &mut Vec<Param>) -> String {
+    parameters.sort_by(|a, b| a.key.cmp(&b.key));
+    let mut parameter_string: String = "".to_string();
+    for param in parameters {
+        if parameter_string.len() != 0 {
+            parameter_string.push_str("&");
+        }
+        parameter_string = format!(
+            "{}{}={}",
+            parameter_string,
+            utf8_percent_encode(param.key.as_str(), USERINFO_ENCODE_SET).to_string(),
+            utf8_percent_encode(param.value.as_str(), USERINFO_ENCODE_SET).to_string()
+        );
+        println!(
+            "{}",
+            utf8_percent_encode(param.key.as_str(), USERINFO_ENCODE_SET)
+        );
+    }
+    parameter_string
+}
+
+fn create_base_string(url: &String, parameters: &String) -> String {
+    format!(
+        "GET&{}&{}",
+        utf8_percent_encode(url.as_str(), USERINFO_ENCODE_SET).to_string(),
+        utf8_percent_encode(parameters.as_str(), USERINFO_ENCODE_SET).to_string()
+    )
+}
+fn create_signature(
+    consumer_secret: &String,
+    token_secret: &String,
+    base_string: &String,
+) -> String {
     let mut mac = HmacSha1::new_varkey(format!("{}&{}", consumer_secret, token_secret).as_bytes())
         .expect("HMAC can take key of any size");
     mac.input(format!("{}", base_string).as_bytes());
@@ -32,36 +69,72 @@ fn create_signature(consumer_secret: String, token_secret: String, base_string: 
         .to_string()
 }
 
-fn get_timestamp() -> String {}
+fn get_timestamp() -> String {
+    //TODO
+    "".to_string()
+}
 
-fn get_nonce() -> String {}
+fn get_nonce() -> String {
+    //TODO
+    "".to_string()
+}
 
-pub fn get_tweets(screen_name: String) -> impl Future<Item = Vec<Tweet>, Error = FetchError> {
+pub fn get_tweets(screen_name: &String) -> impl Future<Item = Vec<Tweet>, Error = FetchError> {
     let mut headers = HeaderMap::new();
 
-    let oauth_timestamp = get_timestamp();
-    let oauth_nonce = get_nonce();
-
-    let oauth_consumer_key = env::var("API_KEY").unwrap().to_string();
+    let mut params: Vec<Param> = vec![
+        Param {
+            key: "include_entities".to_string(),
+            value: "true".to_string(),
+        },
+        Param {
+            key: "oauth_consumer_key".to_string(),
+            value: env::var("API_KEY").unwrap().to_string(),
+        },
+        Param {
+            key: "oauth_nonce".to_string(),
+            value: get_nonce(),
+        },
+        Param {
+            key: "oauth_signature_method".to_string(),
+            value: "HMAC-SHA1".to_string(),
+        },
+        Param {
+            key: "oauth_timestamp".to_string(),
+            value: get_timestamp(),
+        },
+        Param {
+            key: "oauth_token".to_string(),
+            value: env::var("ACCESS_TOKEN").unwrap().to_string(),
+        },
+        Param {
+            key: "oauth_version".to_string(),
+            value: "1.0".to_string(),
+        },
+        Param {
+            key: "screen_name".to_string(),
+            value: screen_name.to_string(),
+        },
+    ];
+    let url = env::var("API_URL").unwrap().to_string();
     let oauth_consumer_secret = env::var("API_SECRET").unwrap().to_string();
-
-    let oauth_token = env::var("ACCESS_TOKEN").unwrap().to_string();
     let oauth_token_secret = env::var("TOKEN_SECRET").unwrap().to_string();
 
+    //todo: add twitter start index
+    let parameter_string = create_parameters_string(&mut params);
+    let base_string = create_base_string(&url, &parameter_string);
+    let signature = create_signature(&oauth_consumer_secret, &oauth_token_secret, &base_string);
+
     headers.insert(AUTHORIZATION, format!("OAuth oauth_consumer_key=\"{}\",oauth_token=\"{}\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"{}\",oauth_nonce=\"{}\",oauth_version=\"1.0\",oauth_signature=\"{}\"",
-        oauth_consumer_key, //consumer key
-        oauth_token, //access token
-        oauth_timestamp, //based on time
-        oauth_nonce, //generate nonce
-        create_signature(oauth_consumer_secret, oauth_token_secret, create_base_string(oauth_consumer_key, oauth_nonce, oauth_timestamp, oauth_token, screen_name))
+        params[1].value, //consumer key
+        params[5].value, //access token
+        params[4].value, //timestamp based on time
+        params[2].value, //nonce
+        signature
         ).parse().unwrap());
-    let uri = format!(
-        "{}?screen_name={}",
-        env::var("API_URL").unwrap().to_string(),
-        screen_name
-    )
-    .parse()
-    .unwrap();
+    let uri = format!("{}?screen_name={}", url, screen_name)
+        .parse()
+        .unwrap();
 
     fetch_json(uri).and_then(|tweets| Ok(tweets))
 }
@@ -108,5 +181,31 @@ impl From<hyper::Error> for FetchError {
 impl From<serde_json::Error> for FetchError {
     fn from(err: serde_json::Error) -> FetchError {
         FetchError::Json(err)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn create_parameters_string_test() {
+        let mut params = vec![
+            Param {
+                key: "param1k".to_string(),
+                value: "param1v".to_string(),
+            },
+            Param {
+                key: "2k".to_string(),
+                value: "2v".to_string(),
+            },
+            Param {
+                key: "1'2".to_string(),
+                value: "a=c".to_string(),
+            },
+        ];
+        assert_eq!(
+            "1%272=a%3Dc&2k=2v&param1k=param1v",
+            create_parameters_string(&mut params)
+        );
     }
 }

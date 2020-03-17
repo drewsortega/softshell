@@ -1,0 +1,1 @@
+POST&https%3A%2F%2Fapi.twitter.com%2F1.1%2Fstatuses%2Fuser_timeline.json&include_entities%3Dtrue%26oauth_consumer_key%3D{}%26oauth_nonce%3D{}%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D{}%26oauth_token%3D{}%26oauth_version%3D1.0%26status%3D{}
